@@ -29,15 +29,17 @@ jobs:
       run: |
         pyinstaller --clean --onefile --noconsole --uac-admin --icon="cr.ico" --name="SacredWare" --add-data "core;core" --add-data "ui;ui" --add-data "config;config" --add-data "offsets;offsets" --add-data "cr.ico;." main.py
 
-    - name: Create Release
+    - name: Create or Update Release
       run: |
-        gh release create ${{ github.ref_name }} --title "${{ github.ref_name }}" --notes "Release ${{ github.ref_name }}" --repo ${{ github.repository }}
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Upload to Release
-      run: |
-        gh release upload ${{ github.ref_name }} dist/SacredWare.exe --clobber --repo ${{ github.repository }}
+        # Verificar si el release ya existe
+        if gh release view ${{ github.ref_name }} --repo ${{ github.repository }} 2>$null; then
+          echo "Release ${{ github.ref_name }} already exists, uploading file only..."
+          gh release upload ${{ github.ref_name }} dist/SacredWare.exe --clobber --repo ${{ github.repository }}
+        else
+          echo "Creating new release ${{ github.ref_name }}..."
+          gh release create ${{ github.ref_name }} --title "${{ github.ref_name }}" --notes "Release ${{ github.ref_name }}" --repo ${{ github.repository }}
+          gh release upload ${{ github.ref_name }} dist/SacredWare.exe --clobber --repo ${{ github.repository }}
+        fi
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
