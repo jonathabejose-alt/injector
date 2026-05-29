@@ -1,5 +1,4 @@
-name: Automated EXE Compiler
-
+name: Automated Installer Compiler
 on:
   push:
     tags:
@@ -23,30 +22,22 @@ jobs:
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install PyQt6 pymem Pillow pyinstaller
+        pip install PyInstaller
 
-    - name: Build Standalone EXE
+    - name: Build Installer EXE
       run: |
-        pyinstaller --clean --onefile --noconsole --uac-admin --icon="cr.ico" --name="SacredWare" --add-data "core;core" --add-data "ui;ui" --add-data "config;config" --add-data "offsets;offsets" --add-data "cr.ico;." main.py
+        pyinstaller --clean --onefile --noconsole --uac-admin --icon="installer.ico" --name="SacredWare_Installer" installer.py
 
-    - name: Create or Update Release
-      run: |
-        # Verificar si el release ya existe
-        if gh release view ${{ github.ref_name }} --repo ${{ github.repository }} 2>$null; then
-          echo "Release ${{ github.ref_name }} already exists, uploading file only..."
-          gh release upload ${{ github.ref_name }} dist/SacredWare.exe --clobber --repo ${{ github.repository }}
-        else
-          echo "Creating new release ${{ github.ref_name }}..."
-          gh release create ${{ github.ref_name }} --title "${{ github.ref_name }}" --notes "Release ${{ github.ref_name }}" --repo ${{ github.repository }}
-          gh release upload ${{ github.ref_name }} dist/SacredWare.exe --clobber --repo ${{ github.repository }}
-        fi
+    - name: Create Release
+      shell: bash
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Get Tag Message
-      id: tag
       run: |
-        $msg = git tag -l --format='%(contents:body)' ${{ github.ref_name }}
-        if (-not $msg) { $msg = "No description provided." }
-        "message=$msg" >> $env:GITHUB_OUTPUT
-      shell: pwsh
+        gh release create ${{ github.ref_name }} --title "${{ github.ref_name }}" --notes "Installer Release ${{ github.ref_name }}" --repo ${{ github.repository }}
+
+    - name: Upload to Release
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        gh release upload ${{ github.ref_name }} dist/SacredWare_Installer.exe --clobber --repo ${{ github.repository }}
