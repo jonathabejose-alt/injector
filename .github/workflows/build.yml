@@ -1,4 +1,5 @@
 name: Automated Installer Compiler
+
 on:
   push:
     tags:
@@ -26,18 +27,12 @@ jobs:
 
     - name: Build Installer EXE
       run: |
-        pyinstaller --clean --onefile --noconsole --uac-admin --icon="installer.ico" --name="SacredWare_Installer" installer.py
-
-    - name: Create Release
-      shell: bash
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        gh release create ${{ github.ref_name }} --title "${{ github.ref_name }}" --notes "Installer Release ${{ github.ref_name }}" --repo ${{ github.repository }}
+        pyinstaller --clean --onefile --noconsole --uac-admin --icon="installer.ico" --name="SacredWare_Installer" main.py
 
     - name: Upload to Release
-      shell: bash
+      uses: softprops/action-gh-release@v2
+      with:
+        files: dist/SacredWare_Installer.exe
+        generate_release_notes: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        gh release upload ${{ github.ref_name }} dist/SacredWare_Installer.exe --clobber --repo ${{ github.repository }}
