@@ -48,6 +48,6 @@ jobs:
           **Instructions:**
           Do not download the raw injector files. Download and run the automated **SacredWare_Installer.exe** launcher below. It will automatically manage folder structures, clean local version caches, and launch the application for you.
           
-          [📥 Click here to Download the Setup Installer](https://github.com/TU_USUARIO/SacredWare-Installer/releases/latest/download/SacredWare_Installer.exe)
+          [📥 Click here to Download the Setup Installer](https://github.com/jonathabejose-alt/SacredWare-Installer/releases/latest/download/SacredWare_Installer.exe)
         color: 0x41cd52
         username: "SacredWare Installer System"
