@@ -34,20 +34,24 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+    - name: Get Release Description
+      id: get_release
+      run: |
+        $url = "https://api.github.com/repos/${{ github.repository }}/releases/tags/${{ github.ref_name }}"
+        $release = Invoke-RestMethod -Uri $url -Headers @{Authorization="Bearer ${{ secrets.GITHUB_TOKEN }}"}
+        $body = $release.body -replace '`', '\`' -replace '"', '\"'
+        echo "body=$body" >> $env:GITHUB_OUTPUT
+      shell: pwsh
+
     - name: Discord Notification
       uses: sarisia/actions-status-discord@v1
       if: always()
       with:
         webhook: ${{ secrets.DISCORD_WEBHOOK }}
-        title: "SacredWare Automated Launcher Ready!"
+        title: ""
         description: |
-          **New Update Released:** ${{ github.ref_name }}
-          
-          The system has updated the global repositories successfully.
-          
-          **Instructions:**
-          Do not download the raw injector files. Download and run the automated **SacredWare_Installer.exe** launcher below. It will automatically manage folder structures, clean local version caches, and launch the application for you.
-          
-          [📥 Click here to Download the Setup Installer](https://github.com/jonathabejose-alt/SacredWare-Installer/releases/latest/download/SacredWare_Installer.exe)
+          **SacredWare ${{ github.ref_name }}** @everyone <@&1483491294847439058>
+          ${{ steps.get_release.outputs.body }}
+          Re-Launch the Updater or download from here: [Download](https://github.com/jonathabejose-alt/SacredWare-Installer/releases/latest/download/SacredWare_Installer.exe)
         color: 0x41cd52
-        username: "SacredWare Installer System"
+        username: "SacredWare"
