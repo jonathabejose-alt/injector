@@ -57,6 +57,10 @@ git clone https://github.com/sacredexility/SacredWare.git
 cd SacredWare
 pip install PyQt6 pymem Pillow
 python main.py
+
+or 
+
+used instaler
 ```
 
 ---
