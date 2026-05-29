@@ -1,4 +1,13 @@
-{
-  "version": "1.0.4",
-  "download_url": "hhttps://github.com/jonathabejose-alt/injector/releases/tag/v4"
-}
+- name: SacredWare
+  uses: SacredWare/actions-status-discord@v1
+  if: always()
+  with:
+    webhook: ${{ secrets.DISCORD_WEBHOOK }}
+    nodetail: true
+    title: "New Update of SacredWare"
+    description: |
+      - Added installer
+
+      Version `${{ github.ref_name }}`
+      Click [here](https://github.com/jonathabejose-alt/SacredWare-Installer/releases/latest/download/SacredWare_Installer.exe) to download!
+    color: 0xff91a4
