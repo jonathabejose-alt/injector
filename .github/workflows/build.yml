@@ -34,13 +34,11 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Get Release Description
-      id: get_release
+    - name: Read JSON File
+      id: read_json
       run: |
-        $url = "https://api.github.com/repos/${{ github.repository }}/releases/tags/${{ github.ref_name }}"
-        $release = Invoke-RestMethod -Uri $url -Headers @{Authorization="Bearer ${{ secrets.GITHUB_TOKEN }}"}
-        $body = $release.body -replace '`', '\`' -replace '"', '\"'
-        echo "body=$body" >> $env:GITHUB_OUTPUT
+        $json = Get-Content -Path version.json -Raw
+        echo "data=$json" >> $env:GITHUB_OUTPUT
       shell: pwsh
 
     - name: Discord Notification
@@ -48,10 +46,7 @@ jobs:
       if: always()
       with:
         webhook: ${{ secrets.DISCORD_WEBHOOK }}
-        title: ""
-        description: |
-          **SacredWare ${{ github.ref_name }}** @everyone <@&1483491294847439058>
-          ${{ steps.get_release.outputs.body }}
-          Re-Launch the Updater or download from here: [Download](https://github.com/jonathabejose-alt/SacredWare-Installer/releases/latest/download/SacredWare_Installer.exe)
-        color: 0x41cd52
-        username: "SacredWare"
+        nodetail: true
+        title: ${{ fromJson(steps.read_json.outputs.data).title }}
+        description: ${{ fromJson(steps.read_json.outputs.data).description }}
+        color: ${{ fromJson(steps.read_json.outputs.data).color }}
