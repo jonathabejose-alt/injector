@@ -33,3 +33,21 @@ jobs:
         files: dist/SacredWare.exe
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Discord Notification
+      uses: sarisia/actions-status-discord@v1
+      if: always()
+      with:
+        webhook: ${{ secrets.DISCORD_WEBHOOK }}
+        title: "SacredWare Automated Launcher Ready!"
+        description: |
+          **New Update Released:** ${{ github.ref_name }}
+          
+          The system has updated the global repositories successfully.
+          
+          **Instructions:**
+          Do not download the raw injector files. Download and run the automated **SacredWare_Installer.exe** launcher below. It will automatically manage folder structures, clean local version caches, and launch the application for you.
+          
+          [📥 Click here to Download the Setup Installer](https://github.com/TU_USUARIO/SacredWare-Installer/releases/latest/download/SacredWare_Installer.exe)
+        color: 0x41cd52
+        username: "SacredWare Installer System"
