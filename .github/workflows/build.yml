@@ -24,10 +24,12 @@ jobs:
         python -m pip install --upgrade pip
         pip install PyInstaller pymem rich colorama PyQt6 Pillow
 
+
     - name: Build EXE
       run: |
-        pyinstaller --clean --onefile --noconsole --uac-admin --icon="cr.ico" --name="SacredWare" --collect-all PyQt6 --add-data "core;core" --add-data "ui;ui" --add-data "config;config" --add-data "offsets;offsets" main.py
+        pyinstaller --clean --onefile --noconsole --uac-admin --icon="cr.ico" --name="SacredWare" --collect-all PyQt6 --add-data "cr.ico;." --add-data "core;core" --add-data "ui;ui" --add-data "config;config" --add-data "offsets;offsets" main.py
 
+        
     - name: Update Release and Upload EXE
       shell: bash
       env:
